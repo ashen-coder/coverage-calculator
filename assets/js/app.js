@@ -8,7 +8,6 @@ console.log('Script is OK! ༼ つ ◕_◕ ༽つ');
 /** @typedef {Record<string, number>[]} ResultList */
 
 const CRITICAL_ERROR_MESSAGE = "Please refresh the page and try again.";
-const CALCULATION_FAILED_ERROR_MESSAGE = "Please check the input values are reasonable";
 
 /** @param {Event} event */
 function toggleRelatedInputs(event) {
@@ -108,26 +107,14 @@ const tooltip = {
             tooltipEl.classList.add('no-transform');
         }
 
-        function getBody(bodyItem) {
-            return bodyItem.lines;
-        }
-
         if (tooltipModel.body) {
-            const bodyLines = tooltipModel.body.map(getBody);
-
             let innerHtml = '<thead>';
 
-            let year = +(Number(tooltipModel.title) * 12).toFixed(0);
-            let months = +(year % 12).toFixed(0);
-            let yearText = `Age ${(year - months) / 12}`;
-            let monthText = months === 0 ? '' : `, Month ${months}`;
-            innerHtml += '<tr><th class="loan-chart__title">' + yearText + monthText + '</th></tr>';
+            const title = `${tooltipModel.title}: ${currencyFormat(tooltipModel.dataPoints[0]?.raw)}`;
 
-            innerHtml += '</thead><tbody>';
-            bodyLines.forEach(function (body, i) {
-                innerHtml += '<tr><td class="loan-chart__text">' + body + '</td></tr>';
-            });
-            innerHtml += '</tbody>';
+            innerHtml += '<tr><th class="loan-chart__title">' + title + '</th></tr>';
+
+            innerHtml += '</thead>';
 
             const tableRoot = tooltipEl.querySelector('table');
             if (tableRoot) {
@@ -146,31 +133,13 @@ const tooltip = {
     },
 };
 
-const secondaryChartData = [
-    {
-        data: [10, 60, 30],
-        backgroundColor: [colors.primary, colors.primaryLight, colors.secondary],
-        borderColor: colors.primary,
-        borderWidth: 0.5,
-    },
-];
-
 const primaryChartData = {
-    labels: [],
+    labels: ['Required Life Cover', 'Existing Life Cover'],
     datasets: [
         {
-            label: 'Placeholder',
-            data: [],
-            stack: "1",
-            backgroundColor: colors.primary,
-            borderColor: colors.primary,
-        },
-        {
-            label: 'Placeholder',
-            data: [],
-            stack: "2",
-            backgroundColor: colors.primaryLight,
-            borderColor: colors.primaryLight,
+            data: [10_850_000, 1_000_000],
+            backgroundColor: [colors.secondary, colors.primary],
+            borderColor: [colors.secondary, colors.primary]
         }
     ],
 };
@@ -400,24 +369,30 @@ const input = {
     },
     raw: function () {
         return this.value;
-    }
+    },
+    nonEmpty: function () {
+        const element = document.getElementById(this.elementId);
+        const elementTitle = element?.parentNode?.parentNode?.querySelector('.input__title')?.textContent;
+        const errorText = `Please fill in the value for ${elementTitle ?? this.elementId}`;
+        if (!this.value) this.error(this.elementId, errorText);
+        return this;
+    },
 }
 
-/** @param {{ main: string, smallA: string, smallB: string, smallC: string }} calculationResults */
+/** @param {{ main: string, smallA: string }} calculationResults */
 const displayCalculationResults = (calculationResults) => {
-    $main && ($main.innerHTML = '');
-    $smallA && ($smallA.innerHTML = '');
-    $smallB && ($smallB.innerHTML = '');
-    $smallC && ($smallC.innerHTML = '');
+    $main && ($main.innerHTML = calculationResults.main);
+    $smallA && ($smallA.innerHTML = calculationResults.smallA);
 }
 
 /**
+ * @param {string[]} labels
+ * @param {number[]} data
  * @param {Chart} primaryChart
  */
-const displayPrimaryResultsChart = (primaryChart) => {
-    primaryChart.data.labels = [];
-    primaryChart.data.datasets[0].data = [];
-    primaryChart.data.datasets[1].data = [];
+const displayPrimaryResultsChart = (labels, data, primaryChart) => {
+    primaryChart.data.labels = labels;
+    primaryChart.data.datasets[0].data = data;
 
     primaryChart.reset();
     primaryChart.update();
@@ -425,17 +400,75 @@ const displayPrimaryResultsChart = (primaryChart) => {
 
 /** @param {Chart} primaryChart */
 const runLifeInsuranceCalculator = (primaryChart) => {
-    displayPrimaryResultsChart(primaryChart);
+    const monthlyIncome = input.get($monthlyIncome0?.id).nonEmpty().val() ?? 0;
+    const supportLength = input.get($supportLength0?.id).nonEmpty().val() ?? 0;
+    const existingCover = input.get($existingCover0?.id).nonEmpty().val() ?? 0;
+    const funeralCover = input.get($funeralCover0?.id).nonEmpty().val() ?? 0;
+    const assets = input.get($assets0?.id).nonEmpty().val() ?? 0;
+    const debt = input.get($debt0?.id).nonEmpty().val() ?? 0;
+
+    if (!input.valid()) throw new Error("Invalid State");
+
+    const requiredCover = (monthlyIncome * supportLength * 12) - existingCover + debt + funeralCover - assets;
+
+    displayCalculationResults({
+        main: `Required Life Cover: ${currencyFormat(requiredCover)}`,
+        smallA: `Existing Life Cover: ${currencyFormat(existingCover)}`
+    });
+
+    displayPrimaryResultsChart(
+        ['Required Life Cover', 'Existing Life Cover'],
+        [requiredCover, existingCover],
+        primaryChart
+    );
 }
 
 /** @param {Chart} primaryChart */
 const runDisabilityCalculator = (primaryChart) => {
-    displayPrimaryResultsChart(primaryChart);
+    const monthlyIncome = input.get($monthlyIncome1?.id).nonEmpty().val() ?? 0;
+    const supportLength = input.get($supportLength1?.id).nonEmpty().val() ?? 0;
+    const existingCover = input.get($existingCover1?.id).nonEmpty().val() ?? 0;
+    const debt = input.get($debt1?.id).nonEmpty().val() ?? 0;
+    const adjust = input.get($adjust1?.id).nonEmpty().val() ?? 0;
+
+    if (!input.valid()) throw new Error("Invalid State");
+
+    const requiredCover = (monthlyIncome * supportLength * 12) - existingCover + debt + adjust;
+
+    displayCalculationResults({
+        main: `Required Disability Cover: ${currencyFormat(requiredCover)}`,
+        smallA: `Existing Disability Cover: ${currencyFormat(existingCover)}`
+    });
+
+    displayPrimaryResultsChart(
+        ['Required Disability Cover', 'Existing Disability Cover'],
+        [requiredCover, existingCover],
+        primaryChart
+    );
 }
 
 /** @param {Chart} primaryChart */
 const runCriticalIllnessCalculator = (primaryChart) => {
-    displayPrimaryResultsChart(primaryChart);
+    const monthlyIncome = input.get($monthlyIncome2?.id).nonEmpty().val() ?? 0;
+    const supportLength = input.get($supportLength2?.id).nonEmpty().val() ?? 0;
+    const existingCover = input.get($existingCover2?.id).nonEmpty().val() ?? 0;
+    const debt = input.get($debt2?.id).nonEmpty().val() ?? 0;
+    const adjust = input.get($adjust2?.id).nonEmpty().val() ?? 0;
+
+    if (!input.valid()) throw new Error("Invalid State");
+
+    const requiredCover = (monthlyIncome * supportLength * 12) - existingCover + debt + adjust;
+
+    displayCalculationResults({
+        main: `Required Critical Illness Cover: ${currencyFormat(requiredCover)}`,
+        smallA: `Existing Critical Illness Cover: ${currencyFormat(existingCover)}`
+    });
+
+    displayPrimaryResultsChart(
+        ['Required Critical Illness Cover', 'Existing Critical Illness Cover'],
+        [requiredCover, existingCover],
+        primaryChart
+    );
 }
 
 /** @param {Chart} primaryChart */
@@ -482,7 +515,7 @@ import("./lib/chartjs/chart.js").then(({ Chart, registerables }) => {
     Chart.register(...registerables);
 
     const primaryChart = new Chart($primaryChart, {
-        type: 'line',
+        type: 'bar',
         data: primaryChartData,
         options: {
             response: true,
