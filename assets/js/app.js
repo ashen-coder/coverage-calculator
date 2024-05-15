@@ -11,6 +11,21 @@ const CRITICAL_ERROR_MESSAGE = "Please refresh the page and try again.";
 const CALCULATION_FAILED_ERROR_MESSAGE = "Please check the input values are reasonable";
 
 /** @param {Event} event */
+function toggleRelatedInputs(event) {
+    const element = /** @type {HTMLSelectElement} */ (event.target);
+    const id = element.id;
+    const index = element.selectedIndex;
+
+    document.querySelectorAll('.' + id)?.forEach(element => {
+        element.classList.add("related-item-hidden");
+    });
+
+    document.querySelectorAll(`.related-to-${id}-${index}`)?.forEach(element => {
+        element.classList.remove("related-item-hidden");
+    });
+}
+
+/** @param {Event} event */
 function forceNumeric(event) {
     const element = /** @type {?HTMLInputElement} */ (event.target);
     if (!element) return;
@@ -165,6 +180,26 @@ const $errorList = document.getElementById('error-list');
 
 const $primaryChart = document.getElementById('primary-chart');
 const $calculateBtn = document.getElementById('calculate-btn');
+const $calculationType = /** @type {HTMLSelectElement} */ (document.getElementById('calc-type'));
+
+const $monthlyIncome0 = document.getElementById('income-0');
+const $supportLength0 = document.getElementById('length-0');
+const $existingCover0 = document.getElementById('cover-0');
+const $funeralCover0 = document.getElementById('funeral-0');
+const $assets0 = document.getElementById('assets-0');
+const $debt0 = document.getElementById('debt-0');
+
+const $monthlyIncome1 = document.getElementById('income-1');
+const $supportLength1 = document.getElementById('length-1');
+const $existingCover1 = document.getElementById('cover-1');
+const $debt1 = document.getElementById('debt-1');
+const $adjust1 = document.getElementById('adjust-1');
+
+const $monthlyIncome2 = document.getElementById('income-2');
+const $supportLength2 = document.getElementById('length-2');
+const $existingCover2 = document.getElementById('cover-2');
+const $debt2 = document.getElementById('debt-2');
+const $adjust2 = document.getElementById('adjust-2');
 
 const $main = document.getElementById('result-main');
 const $smallA = document.getElementById('result-small-A');
@@ -368,8 +403,8 @@ const input = {
     }
 }
 
-/** @param {ResultList} monthlyResults */
-const displayCalculationResults = (monthlyResults) => {
+/** @param {{ main: string, smallA: string, smallB: string, smallC: string }} calculationResults */
+const displayCalculationResults = (calculationResults) => {
     $main && ($main.innerHTML = '');
     $smallA && ($smallA.innerHTML = '');
     $smallB && ($smallB.innerHTML = '');
@@ -388,38 +423,59 @@ const displayPrimaryResultsChart = (primaryChart) => {
     primaryChart.update();
 }
 
-const getInputs = () => {
-    input.reset();
-
-    // inputs
-
-    if (!input.valid()) throw new Error("Invalid State");
-
-    if (
-        true
-        // TODO
-    ) {
-        input.error([], CRITICAL_ERROR_MESSAGE, true);
-        throw new Error("Invalid state");
-    }
-
-    return {};
-}
-
-/**
- * @param {Chart} primaryChart
- */
-const runApp = (primaryChart) => {
-    const { } = getInputs();
-
-    // TODO calculations
-
-    displayCalculationResults([]);
+/** @param {Chart} primaryChart */
+const runLifeInsuranceCalculator = (primaryChart) => {
     displayPrimaryResultsChart(primaryChart);
 }
 
+/** @param {Chart} primaryChart */
+const runDisabilityCalculator = (primaryChart) => {
+    displayPrimaryResultsChart(primaryChart);
+}
+
+/** @param {Chart} primaryChart */
+const runCriticalIllnessCalculator = (primaryChart) => {
+    displayPrimaryResultsChart(primaryChart);
+}
+
+/** @param {Chart} primaryChart */
+const runApp = (primaryChart) => {
+    const calcType = $calculationType.selectedOptions[0].value;
+    switch (calcType) {
+        case 'Life':
+            runLifeInsuranceCalculator(primaryChart);
+            break;
+        case 'Disability':
+            runDisabilityCalculator(primaryChart);
+            break;
+        case 'Illness':
+            runCriticalIllnessCalculator(primaryChart);
+            break;
+        default:
+            input.error([], CRITICAL_ERROR_MESSAGE, true);
+            throw new Error(`Invalid calculation type: ${calcType}`);
+    }
+}
+
+$calculationType.addEventListener('change', toggleRelatedInputs);
+
 [
-    // TODO
+    $monthlyIncome0,
+    $supportLength0,
+    $existingCover0,
+    $funeralCover0,
+    $assets0,
+    $debt0,
+    $monthlyIncome1,
+    $supportLength1,
+    $existingCover1,
+    $debt1,
+    $adjust1,
+    $monthlyIncome2,
+    $supportLength2,
+    $existingCover2,
+    $debt2,
+    $adjust2,
 ].forEach(input => input?.addEventListener('input', forceNumeric));
 
 import("./lib/chartjs/chart.js").then(({ Chart, registerables }) => {
@@ -458,5 +514,13 @@ import("./lib/chartjs/chart.js").then(({ Chart, registerables }) => {
         }
     });
 
+    $calculationType.addEventListener('change', () => runApp(primaryChart));
     $calculateBtn?.addEventListener('click', () => runApp(primaryChart));
+
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    if (urlParams.has('type')) {
+        const event = new Event('change');
+        $calculationType.dispatchEvent(event);
+    }
 })

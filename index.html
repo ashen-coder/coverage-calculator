@@ -12,7 +12,28 @@
     <link rel="stylesheet" href="./assets/css/input.css" />
     <link rel="stylesheet" href="./assets/css/result.css" />
     <script defer src="./assets/js/app.js"></script>
-    <script defer src="./assets/js/dialog-table.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const CALCTYPEPARAMMAP = {
+                'life': 'Life',
+                'disability': 'Disability',
+                'illness': 'Illness'
+            };
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const calcTypeParam = urlParams.get('type');
+            const calcType = CALCTYPEPARAMMAP[calcTypeParam];
+
+            if (calcType) {
+                const $calcType = document.getElementById('calc-type');
+                const $calcTitle = document.getElementById('calc-title');
+                $calcType.value = calcType;
+                $calcTitle.textContent = $calcType.selectedOptions[0]?.textContent ?? $calcTitle.textContent;
+            } else {
+                document.getElementById('calc-type-select').classList.remove('related-item-hidden');
+            }
+        });
+    </script>
 </head>
 
 <body>
@@ -20,6 +41,151 @@
         <div class="calculator-setting" id="calculator_form">
             <p id="calc-title" class="table-cell table-cell--dark table-cell--only-title">Coverage Calculator</p>
             <div class="calculator-content col">
+                <div id="calc-type-select" class="input-wrapper row related-item-hidden">
+                    <label class="input col ">
+                        <div class="dropdown-wrapper">
+                            <div class="input-field row " tabindex="0">
+                                <select class="input-field__text" id="calc-type">
+                                    <option value="Life">How much life cover will I need?</option>
+                                    <option value="Disability">How much disability cover will I need?</option>
+                                    <option value="Illness">How much critical illness cover will I need?</option>
+                                </select>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-0">
+                    <label class="input col">
+                        <p class="input__title">Net Monthly Income (After Tax)</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="income-0" value="45000" />
+                        </div>
+                    </label>
+                    <label class="input col">
+                        <p class="input__title">Length of Financial Support Required</p>
+                        <div class="input-field row">
+                            <input type="text" class="input-field__input" placeholder id="length-0" value="20" />
+                            <span class="input-field__hint">Years</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-0">
+                    <label class="input col">
+                        <p class="input__title">Existing Life Insurance Cover</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="cover-0" value="1000000" />
+                        </div>
+                    </label>
+                    <label class="input col">
+                        <p class="input__title">Required Funeral Cover</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="funeral-0" value="50000" />
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-0">
+                    <div class="input-wrapper row calc-type related-to-calc-type-0">
+                        <label class="input col">
+                            <p class="input__title">Current Value of Assets</p>
+                            <div class="input-field row">
+                                <span class="input-field__hint">R</span>
+                                <input type="text" class="input-field__input" placeholder id="assets-0" value="500000" />
+                            </div>
+                        </label>
+                    </div>
+                    <label class="input col">
+                        <p class="input__title">Current Outstanding Debt</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="debt-0" value="1500000" />
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-1 related-item-hidden">
+                    <label class="input col">
+                        <p class="input__title">Net Monthly Income (After Tax)</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="income-1" value="45000" />
+                        </div>
+                    </label>
+                    <label class="input col">
+                        <p class="input__title">Length of Financial Support Required</p>
+                        <div class="input-field row">
+                            <input type="text" class="input-field__input" placeholder id="length-1" value="20" />
+                            <span class="input-field__hint">Years</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-1 related-item-hidden">
+                    <label class="input col">
+                        <p class="input__title">Exisitng Disability Cover</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="cover-1" value="1000000" />
+                        </div>
+                    </label>
+                    <label class="input col">
+                        <p class="input__title">Current Outstanding Debt</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="debt-1" value="1500000" />
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-1 related-item-hidden">
+                    <label class="input col">
+                        <p class="input__title">Cover Required For Adjusting Living Environment Due To Disability</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="adjust-1" value="250000" />
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-2 related-item-hidden">
+                    <label class="input col">
+                        <p class="input__title">Net Monthly Income (After Tax)</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="income-2" value="45000" />
+                        </div>
+                    </label>
+                    <label class="input col">
+                        <p class="input__title">Length of Financial Support Required</p>
+                        <div class="input-field row">
+                            <input type="text" class="input-field__input" placeholder id="length-2" value="20" />
+                            <span class="input-field__hint">Years</span>
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-2 related-item-hidden">
+                    <label class="input col">
+                        <p class="input__title">Exisitng Critical Illness Cover</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="cover-2" value="1000000" />
+                        </div>
+                    </label>
+                    <label class="input col">
+                        <p class="input__title">Current Outstanding Debt</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="debt-2" value="1500000" />
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row calc-type related-to-calc-type-2 related-item-hidden">
+                    <label class="input col">
+                        <p class="input__title">Cover Required For Adjusting Living Environment Due To Critical Illness</p>
+                        <div class="input-field row">
+                            <span class="input-field__hint">R</span>
+                            <input type="text" class="input-field__input" placeholder id="adjust-2" value="250000" />
+                        </div>
+                    </label>
+                </div>
                 <div class="input-wrapper row">
                     <div class="button--primary__wrapper">
                         <button id="calculate-btn" class="button button--primary ml-auto">Calculate</button>
