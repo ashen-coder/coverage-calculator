@@ -143,6 +143,11 @@
     line-height: 1.75rem
 }
 
+.result-text--small {
+    color: #6b7280;
+    line-height: 1.25rem;
+    font-size: .875rem
+}
 
 .loan-chart {
     padding: .5rem 1rem;
@@ -201,10 +206,52 @@
     height: 303px
 }
 
+.chart__donut-legend {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-top: .5rem
+}
+
+.chart__donut-legend-item {
+    display: flex;
+    gap: .5rem;
+    align-items: center
+}
+
+.chart__donut-legend--col {
+    align-items: flex-start;
+    justify-content: flex-start;
+    flex-direction: column
+}
+
+.chart-wrapper--donut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    max-width: 200px;
+    width: 100%
+}
+
+.chart-wrapper--donut-row {
+    align-items: center;
+    gap: 2rem;
+    flex-direction: row
+}
+
+@media only screen and (max-width:767.9px) {
+    .chart-wrapper--donut {
+        margin: 0 auto
+    }
+}
+
 .chart__text {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    max-width: 390px
 }
 
 .chart__text p:first-child {
