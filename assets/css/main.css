@@ -54,7 +54,7 @@ p {
 }
 
 body {
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
@@ -62,6 +62,7 @@ body {
     background: #fff;
     gap: 0.5rem;
     padding: 0.5rem;
+    min-width: 500px;
 }
 
 .wrapper {
