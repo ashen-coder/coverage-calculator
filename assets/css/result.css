@@ -575,7 +575,6 @@ html[dir=rtl] .result-table__wrapper:last-child table tbody:last-child tr:last-c
     display: flex;
     flex-direction: column;
     gap: 6px;
-    max-width: 337px
 }
 
 .chart__text p:first-child {
