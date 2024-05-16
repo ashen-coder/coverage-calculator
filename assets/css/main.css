@@ -15,12 +15,6 @@
         padding: 0 !important;
     }
 
-    .chart_wrapper--donut {
-        margin-left: 0 !important;
-        gap: 0 !important;
-        page-break-before: avoid !important;
-    }
-
     #primary-chart {
         height: 375px !important;
     }
@@ -28,11 +22,6 @@
     .table-cell--age {
         gap: 0 !important;
         flex-wrap: nowrap !important;
-    }
-
-    .result-table td,
-    .result-table th {
-        padding: 1rem 0.5rem !important;
     }
 }
 
@@ -104,17 +93,8 @@ html[dir=rtl] .ml-auto {
     margin-right: auto;
 }
 
-b,
 span {
     color: inherit;
-}
-
-.regular {
-    font-weight: 400 !important;
-}
-
-.text-center {
-    text-align: center !important;
 }
 
 .related-item-hidden {
