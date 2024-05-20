@@ -27,6 +27,39 @@ function currencyFormat(num, space = '&nbsp') {
     return `R${space}` + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
+/**
+ * @param {string} backgroundColor 
+ * @param {string} patternColor 
+ * @param {number} stroke 
+ * @returns {?CanvasPattern}
+ */
+function createDiagonalPattern(backgroundColor, patternColor, stroke) {
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+
+    if (!context) return null;
+
+    const size = 10;
+    const strokeOffset = stroke / 2;
+    canvas.width = size;
+    canvas.height = size;
+
+    context.fillStyle = backgroundColor;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.strokeStyle = patternColor;
+    context.lineWidth = stroke;
+
+    context.moveTo(size / 2 - strokeOffset, -strokeOffset);
+    context.lineTo(size + strokeOffset, size / 2 + strokeOffset);
+    context.moveTo(-strokeOffset, size / 2 - strokeOffset);
+    context.lineTo(size / 2 + strokeOffset, size + strokeOffset);
+    context.stroke();
+
+    return context.createPattern(canvas, 'repeat');
+}
+
+
 const customDataLabels = {
     id: 'customDataLabel',
     afterDatasetDraw(chart, args, pluginOptions) {
@@ -144,7 +177,7 @@ const primaryChartData = {
                 2750000
             ],
             stack: "2",
-            backgroundColor: 'hsla(7, 75%, 60%, 0.5)',
+            backgroundColor: createDiagonalPattern('hsla(7, 75%, 60%, 0.5)', colors.red, 1.5),
             borderWidth: 2,
             borderColor: colors.red
         }
