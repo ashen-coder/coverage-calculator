@@ -149,6 +149,12 @@
     font-size: .875rem
 }
 
+.result-text--small-red {
+    color: var(--red);
+    line-height: 1.25rem;
+    font-size: .875rem
+}
+
 .loan-chart {
     padding: .5rem 1rem;
     background-color: #fff;
@@ -279,4 +285,8 @@
 
 .result-chart--primary-light {
     background-color: var(--primary-light)
+}
+
+.result-chart--red {
+    background-color: var(--red)
 }
