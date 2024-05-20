@@ -143,8 +143,9 @@ const primaryChartData = {
                 2750000,
                 2750000
             ],
-            stack: "3",
-            backgroundColor: colors.red,
+            stack: "2",
+            backgroundColor: 'hsla(7, 75%, 60%, 0.5)',
+            borderWidth: 2,
             borderColor: colors.red
         }
     ],
