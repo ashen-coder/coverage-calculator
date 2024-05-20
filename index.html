@@ -126,12 +126,15 @@
             <p class="table-cell table-cell--dark table-cell--only-title">Coverage Results</p>
             <div class="table-cell table-cell--age table-cell--only row">
                 <div class="col chart__text">
-                    <p class="result-text" id="result-main-A">Required Life Cover: R&nbsp;2,050,000.00</p>
+                    <p class="result-text" id="result-main-A">Required Life Cover: R&nbsp;3,050,000.00</p>
                     <p class="result-text result-text--small" id="result-small-A">Existing Life Cover: R&nbsp;1,000,000.00</p>
-                    <p class="result-text" id="result-main-B">Required Disability Cover: R&nbsp;2,750,000.00</p>
+                    <p class="result-text result-text--small-red" id="result-small-A2">Shortfall in Life Cover: R&nbsp;2,050,000.00</p>
+                    <p class="result-text" id="result-main-B">Required Disability Cover: R&nbsp;3,750,000.00</p>
                     <p class="result-text result-text--small" id="result-small-B">Existing Disability Cover: R&nbsp;1,000,000.00</p>
-                    <p class="result-text" id="result-main-C">Required Critical Illness Cover: R&nbsp;2,750,000.00</p>
+                    <p class="result-text result-text--small-red" id="result-small-B2">Shortfall in Disability Cover: R&nbsp;2,750,000.00</p>
+                    <p class="result-text" id="result-main-C">Required Critical Illness Cover: R&nbsp;3,750,000.00</p>
                     <p class="result-text result-text--small" id="result-small-C">Existing Critical Illness Cover: R&nbsp;1,000,000.00</p>
+                    <p class="result-text result-text--small-red" id="result-small-C2">Shortfall in Critical Illness Cover: R&nbsp;2,750,000.00</p>
                 </div>
                 <div class="chart-wrapper chart-wrapper--donut chart-wrapper--donut-row">
                     <div class="chart__donut-legend chart__donut-legend--col">
@@ -142,6 +145,10 @@
                         <div class="chart__donut-legend-item">
                             <div class="result-chart result-chart--primary"></div>
                             <p class="result-text result-text--small">Existing Cover</p>
+                        </div>
+                        <div class="chart__donut-legend-item">
+                            <div class="result-chart result-chart--red"></div>
+                            <p class="result-text result-text--small">Shortfall in Cover</p>
                         </div>
                     </div>
                 </div>

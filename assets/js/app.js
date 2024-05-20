@@ -52,7 +52,8 @@ const customDataLabels = {
 const colors = {
     primary: '#162953',
     primaryLight: '#25468d',
-    secondary: '#00ABD0'
+    secondary: '#00ABD0',
+    red: 'hsl(7, 75%, 60%)'
 };
 
 const tooltip = {
@@ -88,9 +89,11 @@ const tooltip = {
 
             const required = `Required ${tooltipModel.title}: ${currencyFormat(tooltipModel.dataPoints[0]?.raw)}`;
             const existing = `Existing ${tooltipModel.title}: ${currencyFormat(tooltipModel.dataPoints[1]?.raw)}`;
+            const shortfall = `Shorfall in ${tooltipModel.title}: ${currencyFormat(tooltipModel.dataPoints[2]?.raw)}`;
 
             innerHtml += '<tr><th class="loan-chart__title">' + required + '</th></tr>';
             innerHtml += '<tr><th class="loan-chart__title">' + existing + '</th></tr>';
+            innerHtml += '<tr><th class="loan-chart__title">' + shortfall + '</th></tr>';
 
             innerHtml += '</thead>';
 
@@ -116,9 +119,9 @@ const primaryChartData = {
     datasets: [
         {
             data: [
-                2050000,
-                2750000,
-                2750000
+                3050000,
+                3750000,
+                3750000
             ],
             stack: "1",
             backgroundColor: colors.secondary,
@@ -133,6 +136,16 @@ const primaryChartData = {
             stack: "2",
             backgroundColor: colors.primary,
             borderColor: colors.primary
+        },
+        {
+            data: [
+                2050000,
+                2750000,
+                2750000
+            ],
+            stack: "3",
+            backgroundColor: colors.red,
+            borderColor: colors.red
         }
     ],
 };
@@ -163,6 +176,9 @@ const $mainC = document.getElementById('result-main-C');
 const $smallA = document.getElementById('result-small-A');
 const $smallB = document.getElementById('result-small-B');
 const $smallC = document.getElementById('result-small-C');
+const $smallA2 = document.getElementById('result-small-A2');
+const $smallB2 = document.getElementById('result-small-B2');
+const $smallC2 = document.getElementById('result-small-C2');
 
 const input = {
     value: /** @type {*} */ (null),
@@ -371,21 +387,26 @@ const input = {
 /** @param {*} calculationResults */
 const displayCalculationResults = (calculationResults) => {
     $mainA && ($mainA.innerHTML = calculationResults.mainA);
-    $mainB && ($mainB.innerHTML = calculationResults.mainB);
-    $mainC && ($mainC.innerHTML = calculationResults.mainC);
     $smallA && ($smallA.innerHTML = calculationResults.smallA);
+    $smallA2 && ($smallA2.innerHTML = calculationResults.smallA2);
+    $mainB && ($mainB.innerHTML = calculationResults.mainB);
     $smallB && ($smallB.innerHTML = calculationResults.smallB);
+    $smallB2 && ($smallB2.innerHTML = calculationResults.smallB2);
+    $mainC && ($mainC.innerHTML = calculationResults.mainC);
     $smallC && ($smallC.innerHTML = calculationResults.smallC);
+    $smallC2 && ($smallC2.innerHTML = calculationResults.smallC2);
 }
 
 /**
  * @param {number[]} requiredCoverData
  * @param {number[]} existingCoverData
+ * @param {number[]} shortfallCoverData
  * @param {Chart} primaryChart
  */
-const displayPrimaryResultsChart = (requiredCoverData, existingCoverData, primaryChart) => {
+const displayPrimaryResultsChart = (requiredCoverData, existingCoverData, shortfallCoverData, primaryChart) => {
     primaryChart.data.datasets[0].data = requiredCoverData;
     primaryChart.data.datasets[1].data = existingCoverData;
+    primaryChart.data.datasets[2].data = shortfallCoverData;
 
     primaryChart.reset();
     primaryChart.update();
@@ -437,26 +458,34 @@ const runApp = (primaryChart) => {
         illnessAdjust
     } = getInputs();
 
-    let requiredLifeCover = (monthlyIncome * supportLength * 12) - lifeCover + debt + funeralCover - assets;
-    let requiredDisabilityCover = (monthlyIncome * supportLength * 12) - disabilityCover + debt + disabilityAdjust;
-    let requiredIllnessCover = (monthlyIncome * supportLength * 12) - illnessCover + debt + illnessAdjust;
+    let requiredLifeCover = (monthlyIncome * supportLength * 12) + debt + funeralCover - assets;
+    let requiredDisabilityCover = (monthlyIncome * supportLength * 12) + debt + disabilityAdjust;
+    let requiredIllnessCover = (monthlyIncome * supportLength * 12) + debt + illnessAdjust;
 
     requiredLifeCover = Math.max(requiredLifeCover, 0);
     requiredDisabilityCover = Math.max(requiredDisabilityCover, 0);
     requiredIllnessCover = Math.max(requiredIllnessCover, 0);
 
+    const shortfallLifeCover = Math.max(requiredLifeCover - lifeCover, 0);
+    const shortfallDisabilityCover = Math.max(requiredDisabilityCover - disabilityCover, 0);
+    const shortfallIllnessCover = Math.max(requiredIllnessCover - illnessCover, 0);
+
     displayCalculationResults({
         mainA: `Required Life Cover: ${currencyFormat(requiredLifeCover)}`,
-        mainB: `Required Disability Cover: ${currencyFormat(requiredDisabilityCover)}`,
-        mainC: `Required Critical Illness Cover: ${currencyFormat(requiredIllnessCover)}`,
         smallA: `Existing Life Cover: ${currencyFormat(lifeCover)}`,
+        smallA2: `Shortfall in Life Cover: ${currencyFormat(shortfallLifeCover)}`,
+        mainB: `Required Disability Cover: ${currencyFormat(requiredDisabilityCover)}`,
         smallB: `Existing Disability Cover: ${currencyFormat(disabilityCover)}`,
+        smallB2: `Shortfall in Disability Cover: ${currencyFormat(shortfallDisabilityCover)}`,
+        mainC: `Required Critical Illness Cover: ${currencyFormat(requiredIllnessCover)}`,
         smallC: `Existing Critical Illness Cover: ${currencyFormat(illnessCover)}`,
+        smallC2: `Shortfall in Critical Illness Cover: ${currencyFormat(shortfallIllnessCover)}`,
     });
 
     displayPrimaryResultsChart(
         [requiredLifeCover, requiredDisabilityCover, requiredIllnessCover],
         [lifeCover, disabilityCover, illnessCover],
+        [shortfallLifeCover, shortfallDisabilityCover, shortfallIllnessCover],
         primaryChart
     );
 }
