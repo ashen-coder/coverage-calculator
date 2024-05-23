@@ -128,8 +128,6 @@ html[dir=rtl] .input-field__text {
     font-weight: 500;
     line-height: 20px;
     min-height: 20px;
-    white-space: nowrap;
-    width: 0
 }
 
 html[dir=rtl] .input__title {
