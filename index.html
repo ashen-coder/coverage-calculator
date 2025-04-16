@@ -20,10 +20,25 @@
             <p id="calc-title" class="table-cell table-cell--dark table-cell--only-title">Coverage Calculator</p>
             <div class="calculator-content col">
                 <div class="input-wrapper row">
+                    <label class="input col ">
+                        <p class="input__title">Currency</p>
+                        <div class="dropdown-wrapper">
+                            <div class="input-field row " tabindex="0">
+                                <select class="input-field__text" id="currency">
+                                    <option value="ZAR"> South African Rand (ZAR) </option>
+                                    <option value="USD"> US Dollar (USD) </option>
+                                    <option value="EUR"> Euro (EUR) </option>
+                                    <option value="GBP"> British Pound (GBP) </option>
+                                </select>
+                            </div>
+                        </div>
+                    </label>
+                </div>
+                <div class="input-wrapper row">
                     <label class="input col">
                         <p class="input__title">Net Monthly Income (After&nbsp;Tax)</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="income" value="25000" />
                         </div>
                     </label>
@@ -39,14 +54,14 @@
                     <label class="input col">
                         <p class="input__title">Current Value of Assets</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="assets" value="500000" />
                         </div>
                     </label>
                     <label class="input col">
                         <p class="input__title">Current Outstanding Debt</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="debt" value="500000" />
                         </div>
                     </label>
@@ -55,14 +70,14 @@
                     <label class="input col">
                         <p class="input__title">Existing Life Insurance Cover</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="life-cover" value="1000000" />
                         </div>
                     </label>
                     <label class="input col">
                         <p class="input__title">Required Funeral Cover</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="funeral" value="50000" />
                         </div>
                     </label>
@@ -71,14 +86,14 @@
                     <label class="input col">
                         <p class="input__title">Exisitng Disability Cover</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="disability-cover" value="1000000" />
                         </div>
                     </label>
                     <label class="input col">
                         <p class="input__title">Exisitng Critical Illness Cover</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="illness-cover" value="1000000" />
                         </div>
                     </label>
@@ -87,7 +102,7 @@
                     <label class="input col">
                         <p class="input__title">Cover Required For Adjusting Living Environment Due To Disability</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="disability-adjust" value="250000" />
                         </div>
                     </label>
@@ -96,7 +111,7 @@
                     <label class="input col">
                         <p class="input__title">Cover Required For Adjusting Living Environment Due To Critical Illness</p>
                         <div class="input-field row">
-                            <span class="input-field__hint">R</span>
+                            <span class="input-field__hint input-field__currency">R</span>
                             <input type="text" class="input-field__input" placeholder id="illness-adjust" value="250000" />
                         </div>
                     </label>

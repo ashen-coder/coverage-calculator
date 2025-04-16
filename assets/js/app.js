@@ -9,6 +9,8 @@ console.log('Script is OK! ༼ つ ◕_◕ ༽つ');
 
 const CRITICAL_ERROR_MESSAGE = "Please refresh the page and try again.";
 
+let currency = 'R';
+
 /** @param {Event} event */
 function forceNumeric(event) {
     const element = /** @type {?HTMLInputElement} */ (event.target);
@@ -18,13 +20,28 @@ function forceNumeric(event) {
         .replace(/(\..*?)\..*/g, '$1');
 }
 
+/** @param {string} value */
+function getCurrencySymbol(value) {
+    switch (value) {
+        case 'USD':
+            return '$';
+        case 'EUR':
+            return '€';
+        case 'GBP':
+            return '£';
+        case 'ZAR':
+        default:
+            return 'R';
+    }
+}
+
 /**
  * @param {number} num
  * @param {string} space
  * @returns {string}
  */
 function currencyFormat(num, space = '&nbsp') {
-    return `R${space}` + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    return `${currency}${space}` + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
 }
 
 /**
@@ -213,6 +230,8 @@ const $smallC = document.getElementById('result-small-C');
 const $smallA2 = document.getElementById('result-small-A2');
 const $smallB2 = document.getElementById('result-small-B2');
 const $smallC2 = document.getElementById('result-small-C2');
+
+const $currency = /** @type {HTMLSelectElement} */ (document.getElementById('currency'));
 
 const input = {
     value: /** @type {*} */ (null),
@@ -524,6 +543,15 @@ const runApp = (primaryChart) => {
     );
 }
 
+/**
+ * @param {Chart} primaryChart
+ */
+const changeCurrency = (primaryChart) => {
+    currency = getCurrencySymbol($currency.value);
+    document.querySelectorAll('.input-field__currency').forEach(el => el.textContent = currency);
+    runApp(primaryChart);
+};
+
 [
     $monthlyIncome,
     $supportLength,
@@ -574,4 +602,5 @@ import("./lib/chartjs/chart.js").then(({ Chart, registerables }) => {
     });
 
     $calculateBtn?.addEventListener('click', () => runApp(primaryChart));
+    $currency.addEventListener('change', () => changeCurrency(primaryChart));
 })
